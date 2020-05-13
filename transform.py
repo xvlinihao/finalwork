@@ -62,26 +62,27 @@ def generate_dataset(xyz):
             data.append(item)"""
         data.append(item)
     data=np.array(data)
-    result=np.array(drop_out(data))
+    result=np.array(downsample(data))
     return result
 
-def drop_out(xyz):
+def downsample(xyz):
     "用于随机丢弃一些连续点"
-    start=np.random.randint(0,np.size(xyz,0))
-    end=np.random.randint(0,np.size(xyz,0))
+    xyz1=xyz.tolist()
+    downsample_rate=np.random.uniform(0.6,1.0)
+    size=int(xyz.shape[0]*downsample_rate)
+    data=random.sample(xyz1,size)
+    zeros=xyz.shape[0]-size
+    for _ in range(0,zeros):
+        xyz1.append([0,0,0])
     
-    data=[]
-    if start>end:
-        start,end=end,start
-    idx=0
-    for item in xyz:
-        idx+=1
-        if idx<=start or idx>=end:
-            data.append(item)
-        else:
-            data.append(np.array([0,0,0]))
+
     return data
-    
+
+def jitter(xyz):
+    jitter_x,jitter_y,jitter_z=random.gauss(0,0.1),random.gauss(0,0.1),random.gauss(0,0.1)
+    xyz+=np.array([jitter_x,jitter_y,jitter_z])
+    return xyz
+
 
 def main():
     parser = argparse.ArgumentParser(description='Input data')
