@@ -94,7 +94,6 @@ class ModelNet40(Dataset):
 
     def __getitem__(self, item):
         pointcloud = self.data[item][:self.num_points]
-        pointcloud=downsample_pointcloud(pointcloud)
         if self.gaussian_noise:
             pointcloud = jitter_pointcloud(pointcloud)
         if self.partition != 'train':
@@ -127,7 +126,7 @@ class ModelNet40(Dataset):
         pointcloud1 = pointcloud.T
 
         rotation_ab = Rotation.from_euler('zyx', [anglez, angley, anglex])
-        pointcloud2 = rotation_ab.apply(pointcloud1.T).T + np.expand_dims(translation_ab, axis=1)
+        pointcloud2 = rotation_ab.apply(downsample_pointcloud(pointcloud1.T)).T + np.expand_dims(translation_ab, axis=1)
 
         euler_ab = np.asarray([anglez, angley, anglex])
         euler_ba = -euler_ab[::-1]
