@@ -90,14 +90,15 @@ def main():
     help='the sort of input data, npy or ply')
     parser.add_argument('--src',type=str,default='',metavar='N',
     help='the path of input data')
-
+    parser.add_argument('--view_num',type=int,default='8',metavar='N',
+    help='the num of multi-view pointclouds you want')
     args = parser.parse_args()
     if args.data_sort=='npy':
         origin_data=np.load(args.src)
     else:
         origin_data = read_xyz(args.src)
     new_data=[]
-    for _ in range(8):
+    for _ in range(args.view_num):
         new_data.append(generate_dataset(origin_data))
     idx=1
     if not os.path.exists('transformed_data'):
